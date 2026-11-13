@@ -221,3 +221,5 @@ export const WsStatusCodes = {
 export const FREE_AI_CREDITS_CREDENTIAL_NAME = 'n8n free OpenAI API credits';
 
 export const STREAM_SEPARATOR = '⧉⇋⇋➽⌑⧉§§\n';
+
+// Touched to re-run the CodeMD PR checks after the scan-speed fix.
