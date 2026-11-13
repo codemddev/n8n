@@ -1,0 +1,51 @@
+# Written by CodeMD (codemd.dev) on its own branch to run tests.
+name: CodeMD test run
+'on':
+  push:
+    branches:
+    - codemd-test-runs
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '>=24.0.0'
+    - name: 'CodeMD: install dependencies'
+      working-directory: ${{ github.workspace }}
+      env:
+        TEST_CWD: packages/cli
+      run: |
+        install() {
+          if [ -f pnpm-lock.yaml ]; then corepack enable && pnpm install --frozen-lockfile
+          elif [ -f yarn.lock ]; then corepack enable && yarn install
+          elif [ -f package-lock.json ]; then npm ci
+          else npm install; fi
+        }
+        if [ -f package.json ] && [ ! -d node_modules ]; then install; fi
+        if [ -n "$TEST_CWD" ] && [ -f "$TEST_CWD/package.json" ] && [ ! -d "$TEST_CWD/node_modules" ]; then (cd "$TEST_CWD" && install); fi
+        if [ -f pnpm-workspace.yaml ] && [ -n "$TEST_CWD" ] && [ "$TEST_CWD" != "." ]; then
+          corepack enable >/dev/null 2>&1 || true
+          pnpm --filter "{./$TEST_CWD}^..." run --if-present build || echo "Building workspace dependencies failed; running the test anyway."
+        fi
+    - name: 'CodeMD test 1/1: packages/cli/src/__tests__'
+      working-directory: ${{ github.workspace }}
+      run: bash .codemd/run-test.sh 0
+      timeout-minutes: 10
+      continue-on-error: true
+    - name: 'CodeMD: determine test result'
+      if: always()
+      working-directory: ${{ github.workspace }}
+      run: bash .codemd/run-test.sh finalize
+    - name: 'CodeMD: keep coverage reports'
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: codemd-coverage-reports
+        path: codemd-reports
+        if-no-files-found: ignore
+        retention-days: 90

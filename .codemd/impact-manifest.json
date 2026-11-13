@@ -1,0 +1,37 @@
+{
+  "base_sha": "483940e9ab9aa773fc5a3a6b8342a1d41f88db05",
+  "change_source": "compare",
+  "changed_component_count": 1,
+  "changed_components": [
+    "packages"
+  ],
+  "changed_file_count": 1,
+  "changed_function_count": 0,
+  "changed_functions": [],
+  "deploy_targets": [],
+  "head_sha": "2e37379d6636043610a86aebd87cb13eeed4cdea",
+  "impacted_test_count": 1,
+  "impacted_tests": [
+    "packages/cli/src/__tests__"
+  ],
+  "lists_truncated": false,
+  "reason": "Every selected test is connected to the changed code by CodeMD's deterministic discovery.",
+  "requires_full_suite": false,
+  "schema_version": 1,
+  "test_selection": [
+    {
+      "changed_file_count": 1,
+      "changed_files": [
+        "packages/cli/src/constants.ts"
+      ],
+      "changed_files_truncated": false,
+      "language": "javascript",
+      "selected_by": [
+        "file_convention"
+      ],
+      "test_file": "packages/cli/src/__tests__"
+    }
+  ],
+  "unresolved_file_count": 0,
+  "unresolved_files": []
+}
